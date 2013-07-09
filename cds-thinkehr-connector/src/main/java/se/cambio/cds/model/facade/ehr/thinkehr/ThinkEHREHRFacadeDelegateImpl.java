@@ -253,7 +253,7 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate{
     }
 
     @Override
-    public boolean storeEHRElements(Collection<String> ehrIds,
+    public boolean storeEHRElements(String ehrId,
 	    Collection<ArchetypeReference> archetypeReferences)
 	    throws InternalErrorException, PatientNotFoundException {
 	// TODO Auto-generated method stub
