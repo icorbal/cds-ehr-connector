@@ -12,27 +12,15 @@
 		<name>Cambio</name>
 	</organization>
 	<scm>
-		<connection>scm:svn:https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-util/</connection>
-		<developerConnection>scm:svn:https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-util/</developerConnection>
-		<url>https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-util/</url>
+		<connection>scm:svn:https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-connector/</connection>
+		<developerConnection>scm:svn:https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-connector/</developerConnection>
+		<url>https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-connector/</url>
 	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<repositories>
-		<repository>
-			<id>marand-thinkehr</id>
-			<name>Marand Think!EHR Repository</name>
-			<url>http://mvn-repo.marand.si:8081/nexus/content/repositories/thinkehr</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 		<repository>
 			<id>jboss-public-repository-group</id>
 			<name>JBoss Public Maven Repository Group</name>
@@ -48,10 +36,7 @@
 			</snapshots>
 		</repository>
 	</repositories>
-	<!-- 
 	<modules>
-		<module>cds-ehr-marand-retriever</module>
-		<module>cds-ehr-marand-filler</module>
+		<module>cds-thinkehr-connector</module>
 	</modules>
-	 -->
 </project>
