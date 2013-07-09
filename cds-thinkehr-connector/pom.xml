@@ -20,9 +20,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<dependencies>
-		<!-- <dependency> <groupId>se.cambio.cds.apps</groupId> <artifactId>cds-ehr-marand-retriever</artifactId> 
-			<version>0.92-SNAPSHOT</version> </dependency> <dependency> <groupId>se.cambio.cds</groupId> 
-			<artifactId>cds-gui-swing</artifactId> <version>0.92-SNAPSHOT</version> </dependency> -->
 		<dependency>
 			<groupId>com.marand.thinkehr</groupId>
 			<artifactId>thinkehr-maf-remoting</artifactId>
@@ -69,11 +66,6 @@
 			<version>1.0.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>xmlbeans</groupId>
-			<artifactId>xmlbeans</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
 			<groupId>openehr</groupId>
 			<artifactId>xml-binding</artifactId>
 			<version>1.0.4-SNAPSHOT</version>
@@ -85,11 +77,6 @@
 		</dependency>
 		<dependency>
 			<groupId>se.cambio.cds</groupId>
-			<artifactId>cds-core</artifactId>
-			<version>0.92-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>se.cambio.cds</groupId>
 			<artifactId>cds-model</artifactId>
 			<version>0.92-SNAPSHOT</version>
 		</dependency>
@@ -97,6 +84,11 @@
 			<groupId>org.openehr.utils</groupId>
 			<artifactId>openehr-utils-model</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>se.cambio.cds</groupId>
+			<artifactId>cds-core</artifactId>
+			<version>0.92-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
