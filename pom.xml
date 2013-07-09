@@ -1,0 +1,57 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>se.cambio.cds.apps</groupId>
+		<artifactId>cds-apps</artifactId>
+		<version>0.92-SNAPSHOT</version>
+	</parent>
+	<packaging>pom</packaging>
+	<artifactId>cds-ehr-connector</artifactId>
+	<name>EHR Utils</name>
+	<organization>
+		<name>Cambio</name>
+	</organization>
+	<scm>
+		<connection>scm:svn:https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-util/</connection>
+		<developerConnection>scm:svn:https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-util/</developerConnection>
+		<url>https://subversion.cambio.se/PC/Standard/ClinicalDecisionSupport/trunk/cds-apps/cds-ehr-util/</url>
+	</scm>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>marand-thinkehr</id>
+			<name>Marand Think!EHR Repository</name>
+			<url>http://mvn-repo.marand.si:8081/nexus/content/repositories/thinkehr</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>jboss-public-repository-group</id>
+			<name>JBoss Public Maven Repository Group</name>
+			<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
+	<!-- 
+	<modules>
+		<module>cds-ehr-marand-retriever</module>
+		<module>cds-ehr-marand-filler</module>
+	</modules>
+	 -->
+</project>
