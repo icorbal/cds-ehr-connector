@@ -117,8 +117,6 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
               AqlUtil.getAql(ehrIds, archetypeReferences)
           );
 
-      List<ElementInstance> elementInstanceList = getEhrElements(archetypeReferences);
-
       for (final Object[] result : resultSet)
       {
         final String ehrId = (String)result[0];
@@ -151,19 +149,6 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
     {
       throw new InternalErrorException(e);
     }
-  }
-
-  private List<ElementInstance> getEhrElements(final Collection<ArchetypeReference> archetypeReferences)
-  {
-    List<ElementInstance> elementInstances = new ArrayList<ElementInstance>();
-    for (ArchetypeReference archetypeReference : archetypeReferences)
-    {
-      for (ElementInstance elementInstance : archetypeReference.getElementInstancesMap().values())
-      {
-        elementInstances.add(elementInstance);
-      }
-    }
-    return elementInstances;
   }
 
   @Override
