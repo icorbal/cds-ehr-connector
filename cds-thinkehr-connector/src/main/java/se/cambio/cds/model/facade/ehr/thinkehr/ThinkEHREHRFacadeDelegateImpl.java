@@ -11,7 +11,7 @@ import com.marand.thinkehr.factory.ThinkEhrConfigEnum;
 import com.marand.thinkehr.factory.ThinkEhrServiceFactory;
 import com.marand.thinkehr.service.ThinkEhrService;
 import com.marand.thinkehr.util.RMConvertUtil;
-import org.openehr.jaxb.rm.Element;
+import se.cambio.cds.controller.guide.GuideUtil;
 import se.cambio.cds.model.facade.ehr.delegate.EHRFacadeDelegate;
 import se.cambio.cds.model.instance.ArchetypeReference;
 import se.cambio.cds.model.instance.ElementInstance;
@@ -126,16 +126,21 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
         {
           resultMap.put(ehrId, new ArrayList<ElementInstance>());
         }
-        for (int i = 1; i < result.length; i++)
+        int i = 1;
+        for (ArchetypeReference archetypeReference : archetypeReferences)
         {
-          if (result[i] instanceof Element)
+          ArchetypeReference clonedArchetypeReference = archetypeReference.clone();
+          for (ElementInstance elementInstance : archetypeReference.getElementInstancesMap().values())
           {
-            if (((Element)result[i]).getValue() != null)
-            {
-              ElementInstance template = elementInstanceList.get(i - 1).clone();
-              template.setDataValue(RMConvertUtil.convert(((Element)result[i]).getValue()));
-              resultMap.get(ehrId).add(template);
-            }
+            resultMap.get(ehrId).add(
+                new ElementInstance(
+                elementInstance.getId(),
+                result[i]!=null?RMConvertUtil.convert(result[i]):null,
+                clonedArchetypeReference,
+                null,
+                result[i]!=null?null:GuideUtil.NULL_FLAVOUR_CODE_NO_INFO
+            ));
+            i++;
           }
         }
       }

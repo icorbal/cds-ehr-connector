@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openehr.jaxb.rm.DvUri;
+import org.openehr.jaxb.rm.Element;
 import org.openehr.jaxb.rm.TerminologyId;
 import org.openehr.rm.datatypes.basic.DataValue;
 import org.openehr.rm.datatypes.basic.DvBoolean;
@@ -62,6 +63,22 @@ public class RMConvertUtil
         (T)convert(value.getLower()),
         (T)convert(value.getUpper())
     );
+  }
+
+  public static DataValue convert(Object o)
+  {
+    if (o instanceof Element)
+    {
+      return convert(((Element)o).getValue());
+    }
+    else if (o instanceof org.openehr.jaxb.rm.DataValue)
+    {
+      return convert((org.openehr.jaxb.rm.DataValue)o);
+    }
+    else
+    {
+      throw new UnsupportedOperationException("Unexpected type "+o.getClass().getSimpleName());
+    }
   }
 
   public static DataValue convert(org.openehr.jaxb.rm.DataValue value)

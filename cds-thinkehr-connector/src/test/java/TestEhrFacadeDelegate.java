@@ -10,7 +10,6 @@ import se.cambio.cds.model.facade.execution.vo.GeneratedArchetypeReference;
 import se.cambio.cds.model.facade.execution.vo.GeneratedElementInstance;
 import se.cambio.cds.model.instance.ArchetypeReference;
 import se.cambio.cds.model.instance.ElementInstance;
-import se.cambio.cds.util.AggregationFunctions;
 import se.cambio.cds.util.Domains;
 
 /**
@@ -41,7 +40,7 @@ public class TestEhrFacadeDelegate
         Domains.EHR_ID,
         "openEHR-EHR-OBSERVATION.height.v1",
         null,
-        AggregationFunctions.ID_AGGREGATION_FUNCTION_LAST
+        null//AggregationFunctions.ID_AGGREGATION_FUNCTION_LAST
     );
     archetypeReferences.add(archetypeReference);
     archetypeReference.getElementInstancesMap().put(
@@ -54,6 +53,19 @@ public class TestEhrFacadeDelegate
             GuideUtil.NULL_FLAVOUR_CODE_NO_INFO,
             "BMI.Calculation.v.1",
             "gt0003"
+        )
+    );
+    //a0/data[at0001]/events[at0002]/time/value
+    archetypeReference.getElementInstancesMap().put(
+        "openEHR-EHR-OBSERVATION.height.v1/data[at0001]/events[at0002]/time",
+        new GeneratedElementInstance(
+            "openEHR-EHR-OBSERVATION.height.v1/data[at0001]/events[at0002]/time",
+            null,
+            archetypeReference,
+            null,
+            GuideUtil.NULL_FLAVOUR_CODE_NO_INFO,
+            "BMI.Calculation.v.1",
+            "gt0004"
         )
     );
 
