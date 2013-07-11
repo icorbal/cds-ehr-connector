@@ -23,17 +23,17 @@
 		<dependency>
 			<groupId>com.marand.thinkehr</groupId>
 			<artifactId>thinkehr-maf-remoting</artifactId>
-			<version>1.3.0.4</version>
+			<version>1.5.0.A6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.marand.thinkehr</groupId>
 			<artifactId>thinkehr-api</artifactId>
-			<version>1.3.0.4</version>
+			<version>1.5.0.A6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.marand.thinkehr</groupId>
 			<artifactId>thinkehr-common</artifactId>
-			<version>1.3.0.4</version>
+			<version>1.5.0.A6</version>
 		</dependency>
 		<dependency>
 			<groupId>com.marand.thinkehr</groupId>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>com.marand.thinkehr</groupId>
 			<artifactId>thinkehr-templates-api</artifactId>
-			<version>1.3.0.4</version>
+			<version>1.5.0.A6</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
