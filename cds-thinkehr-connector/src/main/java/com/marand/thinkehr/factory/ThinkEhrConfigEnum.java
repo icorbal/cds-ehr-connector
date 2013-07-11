@@ -1,6 +1,7 @@
 package com.marand.thinkehr.factory;
 
-import se.cambio.openehr.util.UserConfigurationManager;
+import se.cambio.util.ThinkEHRConfigurationParametersManager;
+
 
 /**
  * @author Jure Grom
@@ -15,26 +16,26 @@ public enum ThinkEhrConfigEnum
 
   public static String getThinkEhrHost() throws Exception
   {
-    return UserConfigurationManager.getParameter(ThinkEhrHost.name());
+    return ThinkEHRConfigurationParametersManager.getParameter(ThinkEhrHost.name());
   }
 
   public static String getThinkEhrPassword() throws Exception
   {
-    return UserConfigurationManager.getParameter(ThinkEhrPassword.name());
+    return ThinkEHRConfigurationParametersManager.getParameter(ThinkEhrPassword.name());
   }
 
   public static String getThinkEhrUsername() throws Exception
   {
-    return UserConfigurationManager.getParameter(ThinkEhrUsername.name());
+    return ThinkEHRConfigurationParametersManager.getParameter(ThinkEhrUsername.name());
   }
 
   public static int getThinkEhrPort() throws Exception
   {
-    return Integer.parseInt(UserConfigurationManager.getParameter(ThinkEhrPort.name()));
+    return Integer.parseInt(ThinkEHRConfigurationParametersManager.getParameter(ThinkEhrPort.name()));
   }
 
   public static String getThinkEhrSubjectNamespace() throws Exception
   {
-    return UserConfigurationManager.getParameter(ThinkEhrSubjectNamespace.name());
+    return ThinkEHRConfigurationParametersManager.getParameter(ThinkEhrSubjectNamespace.name());
   }
 }
