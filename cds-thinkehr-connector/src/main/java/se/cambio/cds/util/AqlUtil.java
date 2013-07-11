@@ -12,9 +12,6 @@ import se.cambio.cds.model.instance.ElementInstance;
  */
 public class AqlUtil
 {
-  private AqlUtil()
-  {
-  }
 
   public static String getAql(Collection<String> ehrIds, Collection<ArchetypeReference> archetypeReferences)
   {
