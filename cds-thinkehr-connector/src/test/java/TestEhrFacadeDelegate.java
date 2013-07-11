@@ -10,6 +10,7 @@ import se.cambio.cds.model.facade.execution.vo.GeneratedArchetypeReference;
 import se.cambio.cds.model.facade.execution.vo.GeneratedElementInstance;
 import se.cambio.cds.model.instance.ArchetypeReference;
 import se.cambio.cds.model.instance.ElementInstance;
+import se.cambio.cds.util.AggregationFunctions;
 import se.cambio.cds.util.Domains;
 
 /**
@@ -36,6 +37,44 @@ public class TestEhrFacadeDelegate
     String ehrId = ehrFacadeDelegate.getEHRIds(Collections.singleton(extPatientId)).iterator().next();
 
     final Collection<ArchetypeReference> archetypeReferences = new ArrayList<ArchetypeReference>();
+    final GeneratedArchetypeReference archetypeReference2 = new GeneratedArchetypeReference(
+        Domains.EHR_ID,
+        "openEHR-EHR-OBSERVATION.body_weight.v1",
+        null,
+        AggregationFunctions.ID_AGGREGATION_FUNCTION_LAST
+    );
+    archetypeReferences.add(archetypeReference2);
+    archetypeReference2.getElementInstancesMap().put(
+        "openEHR-EHR-OBSERVATION.body_weight.v1/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
+        new GeneratedElementInstance(
+            "openEHR-EHR-OBSERVATION.body_weight.v1/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
+            null,
+            archetypeReference2,
+            null,
+            GuideUtil.NULL_FLAVOUR_CODE_NO_INFO,
+            "BMI.Calculation.v.1",
+            "gt0002"
+        )
+    );
+    final GeneratedArchetypeReference archetypeReference1 = new GeneratedArchetypeReference(
+        Domains.EHR_ID,
+        "openEHR-EHR-OBSERVATION.body_weight.v1",
+        null,
+        null
+    );
+    archetypeReferences.add(archetypeReference1);
+    archetypeReference1.getElementInstancesMap().put(
+        "openEHR-EHR-OBSERVATION.body_weight.v1/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
+        new GeneratedElementInstance(
+            "openEHR-EHR-OBSERVATION.body_weight.v1/data[at0002]/events[at0003]/data[at0001]/items[at0004]",
+            null,
+            archetypeReference1,
+            null,
+            GuideUtil.NULL_FLAVOUR_CODE_NO_INFO,
+            "BMI.Calculation.v.1",
+            "gt0002"
+        )
+    );
     final GeneratedArchetypeReference archetypeReference = new GeneratedArchetypeReference(
         Domains.EHR_ID,
         "openEHR-EHR-OBSERVATION.height.v1",
@@ -55,7 +94,6 @@ public class TestEhrFacadeDelegate
             "gt0003"
         )
     );
-    //a0/data[at0001]/events[at0002]/time/value
     archetypeReference.getElementInstancesMap().put(
         "openEHR-EHR-OBSERVATION.height.v1/data[at0001]/events[at0002]/time",
         new GeneratedElementInstance(

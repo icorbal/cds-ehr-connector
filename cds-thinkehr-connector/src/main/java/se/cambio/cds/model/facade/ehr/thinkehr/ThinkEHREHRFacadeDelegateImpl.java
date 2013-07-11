@@ -7,34 +7,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.marand.thinkehr.facade.AbstractThinkEhrFacadeDelegate;
 import com.marand.thinkehr.factory.ThinkEhrConfigEnum;
-import com.marand.thinkehr.factory.ThinkEhrServiceFactory;
 import com.marand.thinkehr.service.ThinkEhrService;
 import com.marand.thinkehr.util.RMConvertUtil;
 import se.cambio.cds.controller.guide.GuideUtil;
 import se.cambio.cds.model.facade.ehr.delegate.EHRFacadeDelegate;
 import se.cambio.cds.model.instance.ArchetypeReference;
 import se.cambio.cds.model.instance.ElementInstance;
+import se.cambio.cds.util.AggregationFunctions;
 import se.cambio.cds.util.AqlUtil;
 import se.cambio.openehr.util.exceptions.InternalErrorException;
 import se.cambio.openehr.util.exceptions.PatientNotFoundException;
 
-public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
+public class ThinkEHREHRFacadeDelegateImpl extends AbstractThinkEhrFacadeDelegate implements EHRFacadeDelegate
 {
-  private final ThinkEhrService service;
-  private final String username;
-  private final String password;
   private final String subjectNamespace;
-
-  private volatile String sessionId = null;
 
   public ThinkEHREHRFacadeDelegateImpl()
   {
     try
     {
-      service = ThinkEhrServiceFactory.getThinkEhrService();
-      username = ThinkEhrConfigEnum.getThinkEhrUsername();
-      password = ThinkEhrConfigEnum.getThinkEhrPassword();
       subjectNamespace = ThinkEhrConfigEnum.getThinkEhrSubjectNamespace();
     }
     catch (Exception e)
@@ -43,26 +36,14 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
     }
   }
 
-  public ThinkEHREHRFacadeDelegateImpl(ThinkEhrService service, String username, String password, String subjectNamespace)
+  public ThinkEHREHRFacadeDelegateImpl(
+      final ThinkEhrService service,
+      final String username,
+      final String password,
+      final String subjectNamespace)
   {
-    this.service = service;
-    this.username = username;
-    this.password = password;
+    super(service, username, password);
     this.subjectNamespace = subjectNamespace;
-  }
-
-  private String getSessionId() throws Exception
-  {
-    if (sessionId != null && !service.isOpenSession(sessionId))
-    {
-      sessionId = null;
-    }
-
-    if (sessionId == null)
-    {
-      sessionId = service.login(username, password);
-    }
-    return sessionId;
   }
 
   @Override
@@ -76,7 +57,7 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
       {
         if (!ehrIds.containsKey(externalEHRId))
         {
-          ehrIds.put(externalEHRId, service.findEhr(getSessionId(), externalEHRId, subjectNamespace));
+          ehrIds.put(externalEHRId, getService().findEhr(getSessionId(), externalEHRId, subjectNamespace));
         }
       }
       return ehrIds.values();
@@ -110,37 +91,27 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
       Map<String, Collection<ElementInstance>> resultMap =
           new HashMap<String, Collection<ElementInstance>>();
 
-      final String sessionId = getSessionId();
-      final List<Object[]> resultSet =
-          service.queryPopulationContent(
-              sessionId,
-              AqlUtil.getAql(ehrIds, archetypeReferences)
-          );
+      Map<String,Collection<ArchetypeReference>> arByAF = splitArchetypeReferences(archetypeReferences);
 
-      for (final Object[] result : resultSet)
+      if (arByAF.containsKey(null))
       {
-        final String ehrId = (String)result[0];
-        if (!resultMap.containsKey(ehrId))
+        if (ehrIds==null || ehrIds.isEmpty())
         {
-          resultMap.put(ehrId, new ArrayList<ElementInstance>());
+          throw new IllegalArgumentException("Can not perform population query for archetype references with empty aggregation function.");
         }
-        int i = 1;
-        for (ArchetypeReference archetypeReference : archetypeReferences)
+        for (ArchetypeReference archetypeReference : arByAF.remove(null))
         {
-          ArchetypeReference clonedArchetypeReference = archetypeReference.clone();
-          for (ElementInstance elementInstance : archetypeReference.getElementInstancesMap().values())
-          {
-            resultMap.get(ehrId).add(
-                new ElementInstance(
-                elementInstance.getId(),
-                result[i]!=null?RMConvertUtil.convert(result[i]):null,
-                clonedArchetypeReference,
-                null,
-                result[i]!=null?null:GuideUtil.NULL_FLAVOUR_CODE_NO_INFO
-            ));
-            i++;
-          }
+          appendResults(ehrIds,Collections.singleton(archetypeReference),resultMap);
         }
+      }
+
+      for (String aggregationFunction : arByAF.keySet())
+      {
+        Map<String, Collection<ElementInstance>> partialResultMap =
+            new HashMap<String, Collection<ElementInstance>>();
+        appendResults(ehrIds,arByAF.get(aggregationFunction),partialResultMap);
+
+        mergeResultMap(aggregationFunction,partialResultMap,resultMap);
       }
 
       return resultMap;
@@ -149,6 +120,102 @@ public class ThinkEHREHRFacadeDelegateImpl implements EHRFacadeDelegate
     {
       throw new InternalErrorException(e);
     }
+  }
+
+  private void mergeResultMap(
+      final String aggregationFunction,
+      final Map<String, Collection<ElementInstance>> partialResultMap,
+      final Map<String, Collection<ElementInstance>> resultMap)
+  {
+    if (AggregationFunctions.ID_AGGREGATION_FUNCTION_LAST.equals(aggregationFunction))
+    {
+      mergeResultMapWithLastResults(partialResultMap,resultMap);
+    }
+    else
+    {
+      throw new UnsupportedOperationException("Unsupported aggregation function: "+aggregationFunction+".");
+    }
+  }
+
+  private void mergeResultMapWithLastResults(
+      final Map<String, Collection<ElementInstance>> partialResultMap,
+      final Map<String, Collection<ElementInstance>> resultMap)
+  {
+    for (String ehrId : partialResultMap.keySet())
+    {
+      if (resultMap.containsKey(ehrId))
+      {
+        e:for (ElementInstance elementInstance : partialResultMap.get(ehrId))
+        {
+          for (ElementInstance ei : resultMap.get(ehrId))
+          {
+            if (elementInstance.getArchetypeReference().getIdArchetype().equals(ei.getArchetypeReference().getIdArchetype()))
+            {
+              ei.getArchetypeReference().setAggregationFunction(AggregationFunctions.ID_AGGREGATION_FUNCTION_LAST);
+              continue e;
+            }
+          }
+          resultMap.get(ehrId).add(elementInstance);
+        }
+      }
+      else
+      {
+        resultMap.put(ehrId,partialResultMap.get(ehrId));
+      }
+    }
+  }
+
+  private void appendResults(
+      final Collection<String> ehrIds,
+      final Collection<ArchetypeReference> archetypeReferences,
+      final Map<String, Collection<ElementInstance>> resultMap) throws Exception
+  {
+    final String sessionId = getSessionId();
+    final List<Object[]> resultSet =
+        getService().queryPopulationContent(
+            sessionId,
+            AqlUtil.getAql(ehrIds, archetypeReferences)
+        );
+
+    for (final Object[] result : resultSet)
+    {
+      final String ehrId = (String)result[0];
+      if (!resultMap.containsKey(ehrId))
+      {
+        resultMap.put(ehrId, new ArrayList<ElementInstance>());
+      }
+      int i = 1;
+      for (ArchetypeReference archetypeReference : archetypeReferences)
+      {
+        ArchetypeReference clonedArchetypeReference = archetypeReference.clone();
+        for (ElementInstance elementInstance : archetypeReference.getElementInstancesMap().values())
+        {
+          resultMap.get(ehrId).add(
+              new ElementInstance(
+              elementInstance.getId(),
+              result[i]!=null? RMConvertUtil.convert(result[i]):null,
+              clonedArchetypeReference,
+              null,
+              result[i]!=null?null: GuideUtil.NULL_FLAVOUR_CODE_NO_INFO
+          ));
+          i++;
+        }
+      }
+    }
+  }
+
+  private Map<String, Collection<ArchetypeReference>> splitArchetypeReferences(final Collection<ArchetypeReference> archetypeReferences)
+  {
+    Map<String, Collection<ArchetypeReference>> map = new HashMap<String, Collection<ArchetypeReference>>();
+    for (ArchetypeReference archetypeReference : archetypeReferences)
+    {
+      if (!map.containsKey(archetypeReference.getAggregationFunction()))
+      {
+        map.put(archetypeReference.getAggregationFunction(), new ArrayList<ArchetypeReference>());
+      }
+      map.get(archetypeReference.getAggregationFunction()).add(archetypeReference);
+    }
+    return map;
   }
 
   @Override
