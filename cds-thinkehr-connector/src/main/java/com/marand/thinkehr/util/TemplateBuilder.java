@@ -1,20 +1,17 @@
 package com.marand.thinkehr.util;
 
-/*import java.util.Deque;
+import java.util.Deque;
 
 import com.marand.thinkehr.template.AmNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import se.cambio.cds.model.template.dto.TemplateDTO;
-import se.cambio.cds.openehr.model.facade.archetype.vo.TemplateObjectBundleCustomVO;*/
+import se.cambio.openehr.model.archetype.vo.TemplateObjectBundleCustomVO;
+import se.cambio.openehr.model.template.dto.TemplateDTO;
+import se.cambio.openehr.util.IOUtils;
 
 /**
  * @author Bostjan Lah
  */
 public class TemplateBuilder extends ArchetypeBuilder
 {
-  /*private static final Logger log = LoggerFactory.getLogger(TemplateBuilder.class);
-
   private final String templateId;
 
   public TemplateBuilder(AmNode root, String language, String defaultLanguage, String templateId)
@@ -23,14 +20,11 @@ public class TemplateBuilder extends ArchetypeBuilder
     this.templateId = templateId;
   }
 
-  public TemplateObjectBundleCustomVO getTemplateVOs(boolean loadAll)
+  public TemplateDTO getTemplateDTO(boolean loadAll)
   {
-    String name = findText(root, language);
-
     loadArchetypeObjects(loadAll, templateId);
 
-    return new TemplateObjectBundleCustomVO(
-        new TemplateDTO(templateId, root.getArchetypeNodeId(), name, name, root.getRmType(), null, null),
+    TemplateObjectBundleCustomVO vo = new TemplateObjectBundleCustomVO(
         archetypeElementVOs,
         clusterVOs,
         archetypeSlotVOs,
@@ -38,11 +32,15 @@ public class TemplateBuilder extends ArchetypeBuilder
         ordinalVOs,
         unitVOs,
         proportionTypeVOs);
+
+
+
+    return new TemplateDTO(templateId, root.getArchetypeNodeId(), root.getRmType(), null, null, IOUtils.getBytes(vo));
   }
 
   @Override
   protected boolean shouldVisitPathable(AmNode amNode, Deque<String> segments)
   {
     return true;
-  }   */
+  }
 }

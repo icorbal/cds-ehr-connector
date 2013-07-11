@@ -1,6 +1,6 @@
 package com.marand.thinkehr.util;
 
-/*import java.util.ArrayDeque;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,29 +31,30 @@ import org.openehr.rm.datatypes.text.CodePhrase;
 import org.openehr.rm.datatypes.text.DvCodedText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import se.cambio.cds.model.archetype.dto.ArchetypeDTO;
-import se.cambio.cds.openehr.model.archetypeelement.vo.ArchetypeElementVO;
-import se.cambio.cds.openehr.model.archetypeslot.vo.ArchetypeSlotVO;
-import se.cambio.cds.openehr.model.cluster.vo.ClusterVO;
-import se.cambio.cds.openehr.model.codedtext.vo.CodedTextVO;
-import se.cambio.cds.openehr.model.facade.archetype.vo.ArchetypeObjectBundleCustomVO;
-import se.cambio.cds.openehr.model.ordinal.vo.OrdinalVO;
-import se.cambio.cds.openehr.model.proportiontype.vo.ProportionTypeVO;
-import se.cambio.cds.openehr.model.unit.vo.UnitVO;
-import se.cambio.cds.openehr.util.ExceptionHandler;
-import se.cambio.cds.openehr.util.OpenEHRConst;
-import se.cambio.cds.openehr.util.OpenEHRDataValuesUI;
-import se.cambio.cds.openehr.util.OpenEHRLanguageManager;
-import se.cambio.cds.ts.Node;
-import se.cambio.cds.util.CDSTerminologyService;
-import se.cambio.cds.util.OpenEHRDataValues;  */
+import se.cambio.openehr.model.archetype.dto.ArchetypeDTO;
+import se.cambio.openehr.model.archetype.vo.ArchetypeElementVO;
+import se.cambio.openehr.model.archetype.vo.ArchetypeObjectBundleCustomVO;
+import se.cambio.openehr.model.archetype.vo.ArchetypeSlotVO;
+import se.cambio.openehr.model.archetype.vo.ClusterVO;
+import se.cambio.openehr.model.archetype.vo.CodedTextVO;
+import se.cambio.openehr.model.archetype.vo.OrdinalVO;
+import se.cambio.openehr.model.archetype.vo.ProportionTypeVO;
+import se.cambio.openehr.model.archetype.vo.UnitVO;
+import se.cambio.openehr.model.facade.terminology.delegate.TerminologyFacadeDelegateFactory;
+import se.cambio.openehr.model.facade.terminology.vo.TerminologyNodeVO;
+import se.cambio.openehr.util.ExceptionHandler;
+import se.cambio.openehr.util.IOUtils;
+import se.cambio.openehr.util.OpenEHRConst;
+import se.cambio.openehr.util.OpenEHRDataValues;
+import se.cambio.openehr.util.OpenEHRDataValuesUI;
+import se.cambio.openehr.util.OpenEHRLanguageManager;
 
 /**
  * @author Bostjan Lah
  */
 public class ArchetypeBuilder
 {
-  /*private static final Logger log = LoggerFactory.getLogger(ArchetypeBuilder.class);
+  private static final Logger log = LoggerFactory.getLogger(ArchetypeBuilder.class);
   private static final String DESCRIPTION = "description";
 
   protected final AmNode root;
@@ -87,14 +88,14 @@ public class ArchetypeBuilder
     }
   }
 
-  public ArchetypeObjectBundleCustomVO getArchetypeVOs(boolean loadAll)
+  public ArchetypeDTO getArchetypeDTO(boolean loadAll)
   {
     String name = findText(root, language);
+    String desc = findDescription(root, language);
 
     loadArchetypeObjects(loadAll, null);
 
-    return new ArchetypeObjectBundleCustomVO(
-        new ArchetypeDTO(root.getArchetypeNodeId(), name, name, root.getRmType(), null, null),
+    ArchetypeObjectBundleCustomVO vo = new ArchetypeObjectBundleCustomVO(
         archetypeElementVOs,
         clusterVOs,
         archetypeSlotVOs,
@@ -102,6 +103,8 @@ public class ArchetypeBuilder
         ordinalVOs,
         unitVOs,
         proportionTypeVOs);
+
+    return new ArchetypeDTO(root.getArchetypeNodeId(), name, desc, root.getRmType(), null, null, IOUtils.getBytes(vo));
   }
 
   protected void loadArchetypeObjects(boolean loadAll, String idTemplate)
@@ -338,9 +341,10 @@ public class ArchetypeBuilder
     {
       try
       {
-        Node node = CDSTerminologyService.retrieveAllSubclasses(
+        TerminologyNodeVO node = TerminologyFacadeDelegateFactory.getDelegate().retrieveAllSubclasses(
             new CodePhrase(codedTextVO.getTerminology(), codedTextVO.getCode()),
-            OpenEHRDataValuesUI.getLanguageCodePhrase());
+            OpenEHRDataValuesUI.getLanguageCodePhrase()
+        );
         DvCodedText ct = node.getValue();
         codedTextVO.setName(getValidCodedTextName(ct.getValue()));
         codedTextVO.setDescription(getValidCodedTextName(ct.getValue()));
@@ -353,9 +357,9 @@ public class ArchetypeBuilder
     }
   }
 
-  private void addCodedTextVOs(Node root, CodedTextVO rootCodedTextVO)
+  private void addCodedTextVOs(TerminologyNodeVO root, CodedTextVO rootCodedTextVO)
   {
-    for (Node node : root.getChildren())
+    for (TerminologyNodeVO node : root.getChildren())
     {
       DvCodedText ct = node.getValue();
       CodedTextVO codedTextVO = new CodedTextVO(
@@ -374,7 +378,7 @@ public class ArchetypeBuilder
     }
   }
 
-  /* Remove all parenthesis to avoid parsing problems * /
+  /* Remove all parenthesis to avoid parsing problems */
   private static String getValidCodedTextName(String string)
   {
     return string.replaceAll("\\(", "[").replaceAll("\\)", "\\]");
@@ -433,7 +437,7 @@ public class ArchetypeBuilder
 			    LanguageManager.getMessage("OriginDesc"),
 			    OpenEHRDataValues.DV_DATE_TIME, null,
 			    idArchetype, "/time"));
-	     * /
+	     */
       //EventTime
       archetypeElementVOs.add(
           new ArchetypeElementVO(
@@ -542,5 +546,5 @@ public class ArchetypeBuilder
       return AmUtils.findTerm(terms, code, DESCRIPTION);
     }
     return AmUtils.findTerm(node.getTerms(), code, DESCRIPTION);
-  }*/
+  }
 }

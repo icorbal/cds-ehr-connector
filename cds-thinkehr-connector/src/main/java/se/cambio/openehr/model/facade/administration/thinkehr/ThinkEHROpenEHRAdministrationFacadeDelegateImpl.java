@@ -7,9 +7,12 @@ import java.util.List;
 import com.marand.thinkehr.facade.AbstractThinkEhrFacadeDelegate;
 import com.marand.thinkehr.factory.TemplateServiceFactory;
 import com.marand.thinkehr.service.ThinkEhrService;
+import com.marand.thinkehr.template.AmNode;
 import com.marand.thinkehr.template.AmTreeBuilder;
 import com.marand.thinkehr.templates.dto.TemplateDto;
 import com.marand.thinkehr.templates.service.TemplateService;
+import com.marand.thinkehr.util.ArchetypeBuilder;
+import com.marand.thinkehr.util.TemplateBuilder;
 import se.cambio.openehr.model.archetype.dto.ArchetypeDTO;
 import se.cambio.openehr.model.facade.administration.delegate.OpenEHRAdministrationFacadeDelegate;
 import se.cambio.openehr.model.template.dto.TemplateDTO;
@@ -60,7 +63,7 @@ public class ThinkEHROpenEHRAdministrationFacadeDelegateImpl extends AbstractThi
         AmTreeBuilder amTreeBuilder = new AmTreeBuilder(templateService.getActiveTemplateByTemplateId(
             getSessionId(),
             templateDto.getTemplateId()));
-        /*List<AmNode> roots = new ArrayList<AmNode>();
+        List<AmNode> roots = new ArrayList<AmNode>();
         ArchetypeBuilder.getArchetypeRoots(roots, amTreeBuilder.build());
 
         for (AmNode root : roots)
@@ -68,9 +71,9 @@ public class ThinkEHROpenEHRAdministrationFacadeDelegateImpl extends AbstractThi
           ArchetypeBuilder builder = new ArchetypeBuilder(root, language, DEFAULT_LANGUAGE);
           if (!containsArchetype(result,root.getArchetypeNodeId()))
           {
-            result.add(builder.getArchetypeDTO());
+            result.add(builder.getArchetypeDTO(true));
           }
-        } */
+        }
       }
       return result;
     }
@@ -108,13 +111,9 @@ public class ThinkEHROpenEHRAdministrationFacadeDelegateImpl extends AbstractThi
         AmTreeBuilder amTreeBuilder = new AmTreeBuilder(templateService.getActiveTemplateByTemplateId(
             getSessionId(),
             templateDto.getTemplateId()));
-        /*TemplateBuilder builder = new TemplateBuilder(amTreeBuilder.build(), language, DEFAULT_LANGUAGE, templateDto.getTemplateId());
-        TemplateDTO templateDTO = builder.getTemplateDTO();
-        if (templateDto.getXml()!=null)
-        {
-          templateDTO.setAom(templateDto.getXml().getBytes("UTF-8"));
-        }
-        result.add(templateDTO); */
+        TemplateBuilder builder = new TemplateBuilder(amTreeBuilder.build(), language, DEFAULT_LANGUAGE, templateDto.getTemplateId());
+        TemplateDTO templateDTO = builder.getTemplateDTO(true);
+        result.add(templateDTO);
       }
       return result;
     }
