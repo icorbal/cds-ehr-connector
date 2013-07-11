@@ -7,18 +7,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.marand.thinkehr.facade.AbstractThinkEhrFacadeDelegate;
-import com.marand.thinkehr.factory.ThinkEhrConfigEnum;
-import com.marand.thinkehr.service.ThinkEhrService;
-import com.marand.thinkehr.util.RMConvertUtil;
+import org.openehr.jaxb.rm.Composition;
+import org.openehr.jaxb.rm.PartyIdentified;
+
 import se.cambio.cds.controller.guide.GuideUtil;
 import se.cambio.cds.model.facade.ehr.delegate.EHRFacadeDelegate;
 import se.cambio.cds.model.instance.ArchetypeReference;
 import se.cambio.cds.model.instance.ElementInstance;
 import se.cambio.cds.util.AggregationFunctions;
 import se.cambio.cds.util.AqlUtil;
+import se.cambio.cds.util.CompositionBuilderUtil;
 import se.cambio.openehr.util.exceptions.InternalErrorException;
 import se.cambio.openehr.util.exceptions.PatientNotFoundException;
+
+import com.marand.thinkehr.facade.AbstractThinkEhrFacadeDelegate;
+import com.marand.thinkehr.factory.ThinkEhrConfigEnum;
+import com.marand.thinkehr.service.AuditChangeType;
+import com.marand.thinkehr.service.ThinkEhrService;
+import com.marand.thinkehr.service.VersionLifecycleState;
+import com.marand.thinkehr.util.RMConvertUtil;
 
 public class ThinkEHREHRFacadeDelegateImpl extends AbstractThinkEhrFacadeDelegate implements EHRFacadeDelegate
 {
@@ -220,11 +227,29 @@ public class ThinkEHREHRFacadeDelegateImpl extends AbstractThinkEhrFacadeDelegat
 
   @Override
   public boolean storeEHRElements(
-      String ehrId,
-      Collection<ArchetypeReference> archetypeReferences)
-      throws InternalErrorException, PatientNotFoundException
-  {
-    // TODO Auto-generated method stub
-    return false;
+	    String ehrId,
+	    Collection<String> guideIds,
+	    Collection<ArchetypeReference> archetypeReferences)
+		    throws InternalErrorException, PatientNotFoundException {
+	try{
+	    final String sessionId = getSessionId();
+	    getService().useEhr(sessionId, ehrId);
+	    PartyIdentified pi = new PartyIdentified();
+	    pi.setName("CDS");
+	    String comment = "CDS generated composition";
+	    String topic = "CDS";
+	    Composition composition = CompositionBuilderUtil.buildComposition(archetypeReferences);
+	    String result =
+		    getService().commitGeneratedComposition(
+			    sessionId, pi, 
+			    comment, AuditChangeType.CREATION,
+			    VersionLifecycleState.COMPLETE,
+			    null,
+			    topic,
+			    composition);
+	}catch (Exception e){
+	    throw new InternalErrorException(e);
+	}
+	return false;
   }
 }
